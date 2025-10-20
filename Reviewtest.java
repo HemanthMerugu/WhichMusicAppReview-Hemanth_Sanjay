@@ -118,6 +118,6 @@ public class Reviewtest {
 
     public static void main(String[] args) {
         // Pass the path of your reviews file to the analyzeReviews method
-        analyzeReviews("SimpleReview.txt");
+        analyzeReviews("reviews.txt");
     }
 }
