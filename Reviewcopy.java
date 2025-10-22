@@ -7,7 +7,7 @@ import java.util.ArrayList;
 /**
  * Class that contains helper methods for the Review Lab
  **/
-public class Review {
+public class Reviewcopy {
 
     private static HashMap<String, Double> sentiment = new HashMap<String, Double>();
     private static ArrayList<String> posAdjectives = new ArrayList<String>();
@@ -178,10 +178,11 @@ public class Review {
     /**
      * Reads a CSV file and analyzes Spotify vs Apple Music sentiment
      */
-    public static void analyzeCSV(String fileName) {
+    public static void main(String[] args) {
+        String fileName = (args.length > 0) ? args[0] : "app_store_music_reviews.csv";
         try {
             Scanner input = new Scanner(new File(fileName));
-            input.nextLine(); // Skip header line
+            input.nextLine(); // goes to next line to skip header line
 
             double spotifyTotal = 0;
             int spotifyCount = 0;
@@ -233,10 +234,5 @@ public class Review {
         } catch (Exception e) {
             System.out.println("Error reading CSV: " + e.getMessage());
         }
-    }
-
-    /** Main method — runs sentiment comparison on CSV file */
-    public static void main(String[] args) {
-        analyzeCSV("app_store_music_reviews.csv");
     }
 }
