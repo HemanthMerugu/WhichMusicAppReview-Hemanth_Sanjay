@@ -25,7 +25,7 @@ public class Review {
             System.out.println("Error reading or parsing cleanSentiment.csv");
         }
 
-        // Read in the positive adjectives
+        // read in the positive adjectives
         try {
             Scanner input = new Scanner(new File("positiveAdjectives.txt"));
             while (input.hasNextLine()) {
@@ -36,7 +36,7 @@ public class Review {
             System.out.println("Error reading or parsing positiveAdjectives.txt\n" + e);
         }
 
-        // Read in the negative adjectives
+        // read in the negative adjectives
         try {
             Scanner input = new Scanner(new File("negativeAdjectives.txt"));
             while (input.hasNextLine()) {
@@ -58,7 +58,7 @@ public class Review {
         try {
             Scanner input = new Scanner(new File(fileName));
 
-            // Add words from the file to the string, separated by a single space
+            // add words then seperate them with a space
             while (input.hasNext()) {
                 temp = temp + input.next() + " ";
             }
@@ -99,7 +99,7 @@ public class Review {
     }
 
     /**
-     * Returns the word after removing any beginning or ending punctuation
+     * gets word after removing any beginning or ending punctuation
      */
     public static String removePunctuation(String word) {
         while (word.length() > 0 && !Character.isAlphabetic(word.charAt(0))) {
@@ -112,13 +112,13 @@ public class Review {
         return word;
     }
 
-    /** Randomly picks a positive adjective */
+    /** random picking of a positive adjective */
     public static String randomPositiveAdj() {
         int index = (int) (Math.random() * posAdjectives.size());
         return posAdjectives.get(index);
     }
 
-    /** Randomly picks a negative adjective */
+    /** random picking of a negative adjective */
     public static String randomNegativeAdj() {
         int index = (int) (Math.random() * negAdjectives.size());
         return negAdjectives.get(index);
@@ -134,7 +134,7 @@ public class Review {
         }
     }
 
-    /** Calculates total sentiment from a text file */
+    /** gets total sentiment from a text file */
     public static double totalSentiment(String fileName) {
         String text = textToString(fileName);
         String[] words = text.split(" ");
@@ -145,24 +145,8 @@ public class Review {
         return total;
     }
 
-    /** Calculates star rating from total sentiment */
-    public static int starRating(String fileName) {
-        double total = totalSentiment(fileName);
-        if (total < -3) {
-            return 1;
-        } else if (total < 2) {
-            return 2;
-        } else if (total < 3) {
-            return 3;
-        } else if (total < 7) {
-            return 4;
-        } else {
-            return 5;
-        }
-    }
-
     /**
-     * Calculates total sentiment directly from text (not a file)
+     * gets total sentiment directly from text instead of a file
      */
     public static double totalSentimentFromText(String reviewText) {
         String[] words = reviewText.split(" ");
@@ -176,12 +160,13 @@ public class Review {
     }
 
     /**
-     * Reads a CSV file and analyzes Spotify vs Apple Music sentiment
+     * reads the csv file analyzes Spotify vs Apple Music sentiment
      */
-    public static void analyzeCSV(String fileName) {
+    public static void main(String[] args) {
+        String fileName = (args.length > 0) ? args[0] : "app_store_music_reviews.csv";
         try {
             Scanner input = new Scanner(new File(fileName));
-            input.nextLine(); // Skip header line
+            input.nextLine(); // goes to next line to skip header line
 
             double spotifyTotal = 0;
             int spotifyCount = 0;
@@ -190,7 +175,14 @@ public class Review {
 
             while (input.hasNextLine()) {
                 String line = input.nextLine();
-                // Split on commas but keep quoted text together
+                // regex = regular expression
+                // overall meaning: split on commas if comma is followed by even number of quotes but keep quoted text together
+                // , = split at commas 
+                // (?=...) = lookahead to see if what follows matches the pattern
+                // (?:...) = group but don't capture
+                // [^\"]*\"[^\"]*\" = some text, then a quote, then some text, then a quote
+                // * = repeat any number of times
+                // $ = end of the string
                 String[] parts = line.split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)");
                 if (parts.length < 4)
                     continue;
@@ -209,7 +201,7 @@ public class Review {
             input.close();
 
             System.out.println("===== Sentiment Analysis Results =====");
-            if (spotifyCount > 0)
+            if (spotifyCount > 0) // gets average sentiment and the number of reviews
                 System.out.println("Spotify: " + spotifyCount + " reviews, Avg sentiment = " + (spotifyTotal / spotifyCount));
             else
                 System.out.println("No Spotify reviews found.");
@@ -233,10 +225,5 @@ public class Review {
         } catch (Exception e) {
             System.out.println("Error reading CSV: " + e.getMessage());
         }
-    }
-
-    /** Main method — runs sentiment comparison on CSV file */
-    public static void main(String[] args) {
-        analyzeCSV("app_store_music_reviews.csv");
     }
 }
